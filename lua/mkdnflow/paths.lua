@@ -28,7 +28,7 @@ local create_dirs = require('mkdnflow').config.create_dirs
 local perspective = require('mkdnflow').config.perspective
 -- Get directory of first-opened file
 local initial_dir = require('mkdnflow').initial_dir
-local root_dir = require('mkdnflow').root_dir
+-- local root_dir = require('mkdnflow').root_dir
 local silent = require('mkdnflow').config.silent
 local links_config = require('mkdnflow').config.links
 local new_file_config = require('mkdnflow').config.new_file_template
@@ -49,6 +49,10 @@ local tobool = function(str)
         bool = true
     end
     return bool
+end
+
+local function get_root_dir()
+    return require('mkdnflow').root_dir
 end
 
 --[[
@@ -91,6 +95,8 @@ local M = {}
 resolve_notebook_path() takes a link source and determines what its absolute reference is
 --]]
 local resolve_notebook_path = function(path, sub_home_var)
+    local root_dir = get_root_dir()
+
     sub_home_var = sub_home_var or false
     local derived_path = path
     if this_os:match('Windows') then
@@ -271,6 +277,8 @@ end
 handle_external_file() takes a path to a non-notebook file and determines how to open it:
 --]]
 local handle_external_file = function(path)
+    local root_dir = get_root_dir()
+
     -- Get what's after the file: tag
     local real_path = string.match(path, '^file:(.*)')
     if this_os:match('Windows') then
@@ -320,6 +328,8 @@ updateDirs() updates the working directory after switching notebooks or notebook
 folders if nvim_wd_heel is true.
 --]]
 M.updateDirs = function()
+    local root_dir = get_root_dir()
+
     local wd
     -- See if the new file is in a different root directory
     if perspective.update or perspective.nvim_wd_heel then
@@ -421,7 +431,7 @@ M.handlePath = function(path, anchor)
     if path_type == 'nb_page' then
         vim_open(path, anchor)
     elseif path_type == 'url' then
-        system_open(path .. (anchor or ""), 'url')
+        system_open(path .. (anchor or ''), 'url')
     elseif path_type == 'file' then
         handle_external_file(path)
     elseif path_type == 'anchor' then
@@ -583,16 +593,12 @@ M.moveSource = function()
                 local dir = string.match(derived_goal, '(.*)' .. sep .. '.-$')
                 if goal_exists then -- If the goal location already exists, abort
                     vim.api.nvim_command('normal! :')
-                    vim.api.nvim_echo(
+                    vim.api.nvim_echo({
                         {
-                            {
-                                "⬇️  '" .. location .. "' already exists! Aborting.",
-                                'WarningMsg',
-                            },
+                            "⬇️  '" .. location .. "' already exists! Aborting.",
+                            'WarningMsg',
                         },
-                        true,
-                        {}
-                    )
+                    }, true, {})
                 elseif source_exists then -- If the source location exists, proceed
                     if dir then -- If there's a directory in the goal location, ...
                         local to_dir_exists = exists(dir, 'd')
