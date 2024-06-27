@@ -1,8 +1,8 @@
 <p align="center">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/main/assets/logo/mkdnflow_logo_dark.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/main/assets/logo/mkdnflow_logo_light.png">
-      <img alt="Black mkdnflow logo in light color mode and white logo in dark color mode." src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/main/assets/logo/mkdnflow_logo_light.png">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/logo/mkdnflow_logo_dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/logo/mkdnflow_logo_light.png">
+      <img alt="Black mkdnflow logo in light color mode and white logo in dark color mode." src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/logo/mkdnflow_logo_light.png">
     </picture>
 </p>
 <p align=center><img src="https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white"> <img src="https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white"> <img src="https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white"></p>
@@ -10,10 +10,11 @@
    <a href="#-features">Features</a> / <a href="#-installation-and-usage">Installation</a> / <a href="#-starting-a-notebook">Starting a notebook</a> / <a href="#%EF%B8%8F-configuration">Config</a> / <a href="#-commands-and-default-mappings">Commands & mappings</a> / <a href="#%EF%B8%8F-to-do">To do</a> / <a href="#-recent-changes">Recent changes</a> / <a href="#-links">Links</a>
 </p>
 
-### 🆕 Top three [latest features](#-recent-changes) and announcements
-1. [Improved table formatting and formatting style options](#tables)
-2. [Customize "jump patterns" for link jumping](#cursor-dictionary-like-table)
-3. [Completion of file links and bib-based references (for nvim-cmp)](#-completion-for-nvim-cmp)
+### 🆕 [Latest features](#-recent-changes) and announcements
+1. [Custom and customizable foldtext for section folds](#section-folding)
+2. [Improved table formatting and formatting style options](#tables)
+3. [Customize "jump patterns" for link jumping](#cursor-dictionary-like-table)
+4. [Completion of file links and bib-based references (for nvim-cmp)](#-completion-for-nvim-cmp)
 
 #### Announcements
 12/12/23: Mkdnflow no longer requires the `luautf8` lua rock as a dependency. UTF-8 characters can be used as [custom to-do symbols](#to_do-dictionary-like-table) out of the box, and table formatting will work out of the box when the table contains UTF-8 characters.
@@ -43,7 +44,7 @@ I keep tabs on the project's [issues](https://github.com/jakewvincent/mkdnflow.n
 ## ✨ Features
 
 <p align=center>
-<a href="https://user-images.githubusercontent.com/45184202/166573700-62cdec3b-a13f-4f9e-9d72-ab2650205042.mp4"><img src="assets/demo/demo.mp4.png" width="75%"></a>
+<a href="https://user-images.githubusercontent.com/45184202/166573700-62cdec3b-a13f-4f9e-9d72-ab2650205042.mp4"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/demo/demo.mp4.png" width="75%"></a>
 </p>
 
 ### Markdown or wiki link styles
@@ -211,6 +212,26 @@ Credit: We heavily referenced [cmp-pandoc-references](https://github.com/jc-doyl
     * Unfold a folded section using `<CR>` or `<leader>F` (both are default mappings; the former maps to a wrapper function that will follow links if the cursor is not on a fold or section heading; the latter is mapped specifically to `:MkdnUnfoldSection<CR>`)
     * If you wish to create a link in a heading (normally done with `<CR>`), you'll need to do so by making a visual selection of the text you wish to create a link from and then hitting `<CR>`, or otherwise disabling the mapping for `MkdnEnter` and mapping `MkdnFollowLink` to `<CR>` in visual and normal modes.
 * Fold the section the cursor is currently in—even if the cursor is not on the heading—using `<leader>f`
+* 🆕 By default, foldtext (the text displayed for a closed fold) is prettified and includes useful information, including:
+    * The level of the section folded
+    * The section title, modified by a (customizable) transformation function
+    * The number of markdown objects contained by the fold, including tables, unordered lists, ordered lists, to-do lists, links, and subsections
+        * Three icon sets are available—`emoji`, `nerdfont` (requires you to be using a nerdfont or patched font in your interface), `plain` (non-emoji unicode symbols)—see the table below—and the icons are [customizable/overridable](#foldtext-dictionary-like-table).
+    * The number of lines in the fold
+    * The percentage of document lines the fold contains
+    * The number of words in the fold
+
+| Object type               | Name     | `emoji` icon |                                                                                                                                                                                                                              `nerdfont` icon                                                                                                                                                                                                                               | `plain` icon |
+| ------------------------- | -------- | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------: |
+| Table                     | `tbl`    |      📈      |     <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/tbl_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/tbl.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/tbl.png" width="18"></picture>      |      ⊞       |
+| Unordered (bulleted) list | `ul`     |      *️⃣       |       <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ul_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ul.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ul.png" width="18"></picture>       |      •       |
+| Ordered (numbered) list   | `ol`     |      1️⃣       |       <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ol_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ol.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/ol.png" width="18"></picture>       |      ①       |
+| To-do list                | `todo`   |      ✅      |    <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/todo_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/todo.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/todo.png" width="18"></picture>    |      ☑       |
+| Image                     | `img`    |      🖼️      |     <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/img_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/img.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/img.png" width="18"></picture>      |      ⧉       |
+| Fenced code block         | `fncblk` |      🧮      | <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/fncblk_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/fncblk.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/fncblk.png" width="18"></picture> |      ‵       |
+| Section                   | `sec`    |      🏷️      |     <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/sec_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/sec.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/sec.png" width="18"></picture>      |      §       |
+| Paragraph                 | `par`    |      📃      |     <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/par_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/par.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/par.png" width="18"></picture>      |      ¶       |
+| Link                      | `link`   |      🔗      |    <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/link_dark.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/link.png"><img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/nerdfont/link.png" width="18"></picture>    |      ⇔       |
 
 ### Lists
 * List markers recognized: `-`, `*`, and `+`
@@ -418,6 +439,7 @@ require('mkdnflow').setup({
         conceal = true,
         cursor = true,
         folds = true,
+        foldtext = true,
         links = true,
         lists = true,
         maps = true,
@@ -476,6 +498,25 @@ require('mkdnflow').setup({
         not_started = ' ',
         in_progress = '-',
         complete = 'X'
+    },
+    foldtext = {
+        object_count = true,
+        object_count_icons = 'emoji',
+        object_count_opts = function()
+            return require('mkdnflow').foldtext.default_count_opts()
+        end,
+        line_count = true,
+        line_percentage = true,
+        word_count = false,
+        title_transformer = nil,
+        separator = ' · ',
+        fill_chars = {
+            left_edge = '⢾',
+            right_edge = '⡷',
+            left_inside = ' ⣹',
+            right_inside = '⣏ ',
+            middle = '⣿',
+        },
     },
     tables = {
         trim_whitespace = true,
@@ -655,6 +696,96 @@ end
     * `to_do.not_started` (string): Stipulates which symbol represents a not-yet-started to-do (default: `' '`)
     * `to_do.in_progress` (string):  Stipulates which symbol represents an in-progress to-do (default: `'-'`)
     * `to_do.complete` (string):  Stipulates which symbol represents a complete to-do (default: `'X'`)
+
+#### `foldtext` (dictionary-like table)
+* `foldtext.object_count` (boolean): Whether to show a count of all the objects inside of a folded section (default: `true`)
+* `foldtext.object_count_icon_set` (string or dictionary-like table): Which icon set to use to represent the counted objects. The pre-packaged icon sets are named `'emoji'` (default), `'plain'`, and `'nerdfont'`.
+* `foldtext.object_count_opts` (function => table): A function returning a dictionary-like table specifying various attributes of the objects to be counted (default: `function() return require('mkdnflow').foldtext.default_count_opts end`), where the keys are the names of the objects to be counted. If the names are one of the `{name}`s `tbl`, `ul`, `ol`, `todo`, `img`, `fncblk`, `sec`, `par`, or `link`, any of the following entries will be filled in with the default value if you do not provide a value for it in your custom table (see below this list for a sample foldtext configuration 'recipe'):
+    * `foldtext.object_count_opts().{name}.icon` (string): The icon to use to represent the counted object (default: the value for `{name}` in the emoji icon set, or if another icon set is named, the value for `{name}` in whichever icon set you've specified)
+    * `foldtext.object_count_opts().{name}.count_method.prep` (function => string): A function that performs any preprocessing manipulations to the text before the pattern is used to count objects according to the tallying method specified. This may be useful if it helps you write a simpler pattern (default: Only `tbl` \[table\] and `fncblk` \[fenced code block\] have default preprocessing functions:
+        * `tbl`'s preprocessor strips wiki-style links from the document so that the vertical bar is not counted as part of a table
+        * `fncblk`'s preprocessor adds a newline character to the beginning of the section if the section starts immediately with a fenced code block).
+    * `foldtext.object_count_opts().{name}.count_method.pattern` (table): An array-like table of strings (Lua patterns). Used differently depending on the object type's corresponding tally method (see below).
+    * `foldtext.object_count_opts().{name}.count_method.tally` (string): One of three tallying methods to use for the object type: `'blocks'`, `'line_matches'`, or `'global_matches'`. The effects of each of these are as follows:
+        * `'blocks'`: If this tally method is used for an object type, all contiguous _blocks_ of lines matching the pattern(s) for a particular type are counted. (Patterns for this method need to cause a successful match if part of a multi-line object occurs on the line—for instance, `'^[-*] '` will match a line with an unordered list item using `*` or `-` as an item marker.) `tbl`, `ul`, `ol`, and `todo` use this method by default.
+        * `'line_matches'`: If this tally method is used for an object type, one or more matches on a line will count as one match. (Patterns for this method need to cause a successful match if the object occurs on the line—for instance, `'^#+%s'` will match a section heading beginning with at least one hash.) `sec` uses this method by default.
+        * `'global_matches'`: If this tally method is used for an object type, every match of an instance across the entire fold section is counted individually. Patterns may take multiple lines into account because the string searched is a concatenation of all lines in the folded section (separated by newlines characters `\n`). (Patterns for this method should match every individual occurrence of the object—for instance, `'%b[]%b()'` will match every markdown-style link.) `img`, `fncblk`, `par`, and `link` use this method by default.
+* `foldtext.line_count` (boolean): Whether to show the count of lines contained in the fold (default: `true`)
+* `foldtext.line_percentage` (boolean): Whether to show the percentage of document lines contained in the fold (default: `true`)
+* `foldtext.word_count` (boolean): Whether to show the count of words contained in the fold (default: `false`)
+* `foldtext.title_transformer` (function => \[function => string\]): A function that returns a function that returns a string. This function accepts a string (the text of the first line in the fold \[a section heading\]) and returns a transformed string for use in the foldtext. (default: `function() require('mkdnflow').foldtext.default_title_transformer end`)
+* `foldtext.fill_chars` (dictionary-like table)
+    * `foldtext.fill_chars.left_edge` (string): The character(s) to use at the very left edge of the foldtext, adjacent to the left edge of the window (default: `'⢾⣿⣿'`)
+    * `foldtext.fill_chars.right_edge` (string): The character(s) to use at the very right edge of the foldtext, adjacent to the right edge of the window (default: `'⣿⣿⡷'`)
+    * `foldtext.fill_chars.item_separator` (string): The character(s) used to separate the items within a section, such as the various object counts (default: `' · '`)
+    * `foldtext.fill_chars.section_separator` (string): The character(s) used to separate _adjacent_ sections (default: `' ⣹⣿⣏ '`). At time of writing, the only adjacent sections are the item-count section and the line- and word-count section (both on the right end of the foldtext). The section title is a separate section (on the left) but is not adjacent to any other sections.
+    * `foldtext.fill_chars.left_inside` (string): The character(s) used to separate  (default: `' ⣹'`)
+    * `foldtext.fill_chars.right_inside` (string): (default: `'⣏ '`)
+    * `foldtext.fill_chars.middle` (string): (default: `'⣿'`)
+
+```lua
+-- SAMPLE FOLDTEXT CONFIGURATION RECIPE WITH COMMENTS
+require('mkdnflow').setup({
+    -- Other config options
+    foldtext = {
+        title_transformer = function()
+            local function my_title_transformer(text)
+                local updated_title = text:gsub('%b{}', '')
+                updated_title = updated_title:gsub('^%s*', '')
+                updated_title = updated_title:gsub('%s*$', '')
+                updated_title = updated_title:gsub('^######', '░░░░░▓')
+                updated_title = updated_title:gsub('^#####', '░░░░▓▓')
+                updated_title = updated_title:gsub('^####', '░░░▓▓▓')
+                updated_title = updated_title:gsub('^###', '░░▓▓▓▓')
+                updated_title = updated_title:gsub('^##', '░▓▓▓▓▓')
+                updated_title = updated_title:gsub('^#', '▓▓▓▓▓▓')
+                return updated_title
+            end
+            return my_title_transformer
+        end,
+        object_count_icon_set = 'nerdfont', -- Use/fall back on the nerdfont icon set
+        object_count_opts = function()
+            local opts = {
+                link = false, -- Prevent links from being counted
+                blockquote = { -- Count block quotes (these aren't counted by default)
+                    icon = ' ',
+                    count_method = {
+                        pattern = { '^>.+$' },
+                        tally = 'blocks',
+                    }
+                },
+                fncblk = {
+                    -- Override the icon for fenced code blocks with 
+                    icon = ' '
+                }
+            }
+            return opts
+        end,
+        line_count = false, -- Prevent lines from being counted
+        word_count = true, -- Count the words in the section
+        fill_chars = {
+            left_edge = '╾─🖿 ─',
+            right_edge = '──╼',
+            item_separator = ' · ',
+            section_separator = ' // ',
+            left_inside = ' ┝',
+            right_inside = '┥ ',
+            middle = '─',
+        },
+    },
+    -- Other config options
+})
+```
+
+The above recipe will produce foldtext like the following (for an h3-level section heading called `My section`):
+
+<p align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/foldtext/foldtext_ex_dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/foldtext/foldtext_ex.png">
+      <img src="https://raw.githubusercontent.com/jakewvincent/mkdnflow.nvim/readme-media/assets/foldtext/foldtext_ex.png">
+    </picture>
+</p>
 
 #### `tables` (dictionary-like table)
 * `tables.trim_whitespace` (boolean): Whether extra whitespace should be trimmed from the end of a table cell when a table is formatted (default: `true`)

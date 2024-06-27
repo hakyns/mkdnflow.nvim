@@ -233,7 +233,7 @@ enter_internal_path = function(path)
     }
     vim.ui.input(input_opts, function(response)
         if response ~= nil and response ~= path .. sep then
-            vim_open(response)
+            internal_open(response)
             vim.api.nvim_command('normal! :')
         end
     end)
@@ -518,14 +518,16 @@ M.moveSource = function()
         vim.api.nvim_set_option('cmdheight', rows_needed)
         vim.ui.input({ prompt = prompt }, function(response)
             if response == 'y' then
-                local command = this_os:match('Windows') and 'move' or 'mv'
-                os.execute(
-                    command
-                        .. ' '
-                        .. vim.fn.shellescape(derived_source)
-                        .. ' '
-                        .. vim.fn.shellescape(derived_goal)
-                )
+                if this_os:match('Windows') then
+                    os.execute('move "' .. derived_source .. '" "' .. derived_goal .. '"')
+                else
+                    os.execute(
+                        'mv '
+                            .. utils.escapeChars(derived_source)
+                            .. ' '
+                            .. utils.escapeChars(derived_goal)
+                    )
+                end
                 -- Change the link content
                 vim.api.nvim_buf_set_text(
                     0,
@@ -593,12 +595,16 @@ M.moveSource = function()
                 local dir = string.match(derived_goal, '(.*)' .. sep .. '.-$')
                 if goal_exists then -- If the goal location already exists, abort
                     vim.api.nvim_command('normal! :')
-                    vim.api.nvim_echo({
+                    vim.api.nvim_echo(
                         {
-                            "⬇️  '" .. location .. "' already exists! Aborting.",
-                            'WarningMsg',
+                            {
+                                "⬇️  '" .. location .. "' already exists! Aborting.",
+                                'WarningMsg',
+                            },
                         },
-                    }, true, {})
+                        true,
+                        {}
+                    )
                 elseif source_exists then -- If the source location exists, proceed
                     if dir then -- If there's a directory in the goal location, ...
                         local to_dir_exists = exists(dir, 'd')
